@@ -1,0 +1,14 @@
+{
+    "name": "library-of-wonderland",
+    "private": true,
+    "description": "Solo se necesita Node si quieres modificar los estilos. El CSS compilado (public/css/app.css) ya viene incluido.",
+    "scripts": {
+        "css": "tailwindcss -i resources/css/app.css -o public/css/app.css --minify",
+        "css:watch": "tailwindcss -i resources/css/app.css -o public/css/app.css --watch"
+    },
+    "devDependencies": {
+        "@tailwindcss/cli": "^4.1.0",
+        "alpinejs": "^3.14.9",
+        "tailwindcss": "^4.1.0"
+    }
+}

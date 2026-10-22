@@ -1,0 +1,11 @@
+# Proteccion cuando el proyecto vive dentro de htdocs (XAMPP):
+# desde la raiz SOLO se puede entrar a /public (la aplicacion) y al index.php que redirige a ella.
+# Todo lo demas (.env, storage, vendor, app, database, *.bat ...) responde 403, sin importar mayusculas
+# ni nombres cortos de Windows (8.3).
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteRule ^public(/|$) - [NC,L]
+    RewriteRule ^(index\.php)?$ - [NC,L]
+    RewriteRule ^ - [F,L]
+</IfModule>

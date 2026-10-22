@@ -1,0 +1,65 @@
+name: library-of-wonderland-pg
+
+# =====================================================================================
+#  Variante con PostgreSQL 16 en lugar de MariaDB (misma aplicacion, misma imagen)
+#
+#    docker compose -f docker-compose.postgres.yml up -d      ->  http://localhost:8080
+#
+#  No ejecutes a la vez este archivo y docker-compose.yml (usan el mismo puerto 8080).
+# =====================================================================================
+services:
+  app:
+    image: ${WONDERLAND_IMAGE:-ghcr.io/jesusregil/library-of-wonderland:latest}
+    pull_policy: always
+    container_name: wonderland-app-pg
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      APP_NAME: "Library of Wonderland"
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      APP_LOCALE: es
+      APP_FALLBACK_LOCALE: es
+      APP_TIMEZONE: ${APP_TIMEZONE:-America/Mexico_City}
+      APP_KEY: ${APP_KEY:-}
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: library_of_wonderland
+      DB_USERNAME: wonderland
+      DB_PASSWORD: ${DB_PASSWORD:-wonderland}
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+      LOG_CHANNEL: stderr
+      WONDERLAND_SEED: ${WONDERLAND_SEED:-true}
+      WONDERLAND_SHOW_DEMO: ${WONDERLAND_SHOW_DEMO:-true}
+    volumes:
+      - app_storage:/var/www/html/storage
+      - app_uploads:/var/www/html/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    container_name: wonderland-db-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: library_of_wonderland
+      POSTGRES_USER: wonderland
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-wonderland}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wonderland -d library_of_wonderland"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  pg_data:
+  app_storage:
+  app_uploads:

@@ -1,0 +1,86 @@
+name: library-of-wonderland
+
+# =====================================================================================
+#  Library of Wonderland - ejecutar TODO en Docker (aplicacion + base de datos)
+#
+#    docker compose up -d          ->  http://localhost:8080
+#
+#  Descarga la imagen ya publicada (no hay que compilar nada). Para construirla tu mismo:
+#    docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+#  Variables opcionales (archivo .env junto a este archivo): APP_PORT, DB_PASSWORD,
+#  WONDERLAND_IMAGE, WONDERLAND_SEED, WONDERLAND_SHOW_DEMO, APP_DEBUG ...
+# =====================================================================================
+services:
+  app:
+    image: ${WONDERLAND_IMAGE:-ghcr.io/jesusregil/library-of-wonderland:latest}
+    pull_policy: always
+    container_name: wonderland-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      APP_NAME: "Library of Wonderland"
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      APP_LOCALE: es
+      APP_FALLBACK_LOCALE: es
+      APP_TIMEZONE: ${APP_TIMEZONE:-America/Mexico_City}
+      APP_KEY: ${APP_KEY:-}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: library_of_wonderland
+      DB_USERNAME: wonderland
+      DB_PASSWORD: ${DB_PASSWORD:-wonderland}
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+      LOG_CHANNEL: stderr
+      WONDERLAND_SEED: ${WONDERLAND_SEED:-true}
+      WONDERLAND_SHOW_DEMO: ${WONDERLAND_SHOW_DEMO:-true}
+    volumes:
+      # PDFs de los libros (privados), sesiones y clave de la aplicacion
+      - app_storage:/var/www/html/storage
+      # Portadas subidas por los autores
+      - app_uploads:/var/www/html/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:10.11
+    container_name: wonderland-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MARIADB_DATABASE: library_of_wonderland
+      MARIADB_USER: wonderland
+      MARIADB_PASSWORD: ${DB_PASSWORD:-wonderland}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  # Opcional: docker compose --profile tools up -d   ->  http://localhost:8081 (root / root)
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: wonderland-phpmyadmin
+    profiles: ["tools"]
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      UPLOAD_LIMIT: 64M
+    ports:
+      - "${PMA_PORT:-8081}:80"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+  app_storage:
+  app_uploads:

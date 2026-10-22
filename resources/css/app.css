@@ -1,0 +1,181 @@
+@import "tailwindcss" source(none);
+
+@source "../views/**/*.blade.php";
+@source "../../app/**/*.php";
+
+/*
+ * Library of Wonderland - sistema de diseno
+ * Estilo sobrio e institucional: azul marino ("brand") + grises neutros sobre fondo claro.
+ */
+@theme {
+    --font-sans: "Segoe UI", ui-sans-serif, system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    --color-brand-50: #f1f5fa;
+    --color-brand-100: #e0e9f4;
+    --color-brand-200: #c3d3e8;
+    --color-brand-300: #9bb4d5;
+    --color-brand-400: #6f90bd;
+    --color-brand-500: #4d71a5;
+    --color-brand-600: #3b5a8a;
+    --color-brand-700: #2f4a72;
+    --color-brand-800: #263c5d;
+    --color-brand-900: #1f314c;
+    --color-brand-950: #141f33;
+
+    --color-surface: #f5f6f8;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-surface font-sans text-slate-700 antialiased;
+    }
+
+    h1, h2, h3, h4 {
+        @apply font-semibold tracking-tight text-slate-900;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    ::selection {
+        background: var(--color-brand-200);
+    }
+
+    button, [role="button"], summary {
+        cursor: pointer;
+    }
+}
+
+@layer components {
+    .container-page {
+        @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+
+    /* ---------- Botones ---------- */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    }
+    .btn-primary {
+        @apply bg-brand-700 text-white hover:bg-brand-800 active:bg-brand-900;
+    }
+    .btn-light {
+        @apply bg-white text-brand-900 hover:bg-brand-50;
+    }
+    .btn-outline {
+        @apply border border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50;
+    }
+    .btn-ghost {
+        @apply text-slate-600 hover:bg-slate-100 hover:text-slate-900;
+    }
+    .btn-danger {
+        @apply bg-red-600 text-white hover:bg-red-700;
+    }
+    .btn-danger-outline {
+        @apply border border-red-200 bg-white text-red-700 hover:bg-red-50;
+    }
+    .btn-sm {
+        @apply gap-1.5 px-3 py-1.5 text-xs;
+    }
+    .btn-lg {
+        @apply px-5 py-2.5 text-base;
+    }
+    .btn-block {
+        @apply w-full;
+    }
+    .btn-icon {
+        @apply px-2 py-2;
+    }
+
+    /* ---------- Formularios ---------- */
+    .label {
+        @apply mb-1.5 block text-sm font-medium text-slate-700;
+    }
+    .input {
+        @apply block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-200 disabled:bg-slate-100 disabled:text-slate-500;
+    }
+    .input-error {
+        @apply border-red-400 focus:border-red-500 focus:ring-red-100;
+    }
+    .file-input {
+        @apply block w-full cursor-pointer rounded-md border border-slate-300 bg-white text-sm text-slate-600 file:mr-3 file:cursor-pointer file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-slate-700 hover:file:bg-slate-200;
+    }
+    .help {
+        @apply mt-1 text-xs text-slate-500;
+    }
+    .error-text {
+        @apply mt-1 text-xs font-medium text-red-600;
+    }
+    .checkbox {
+        @apply h-4 w-4 rounded border-slate-300 accent-brand-700;
+    }
+
+    /* ---------- Contenedores ---------- */
+    .card {
+        @apply rounded-lg border border-slate-200 bg-white shadow-xs;
+    }
+    .card-body {
+        @apply p-5 sm:p-6;
+    }
+    .section-title {
+        @apply text-xl font-semibold text-slate-900 sm:text-2xl;
+    }
+    .link {
+        @apply font-medium text-brand-700 underline-offset-2 hover:text-brand-900 hover:underline;
+    }
+
+    /* ---------- Etiquetas ---------- */
+    .badge {
+        @apply inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium;
+    }
+    .badge-brand {
+        @apply bg-brand-100 text-brand-800;
+    }
+    .badge-green {
+        @apply bg-emerald-100 text-emerald-800;
+    }
+    .badge-red {
+        @apply bg-red-100 text-red-800;
+    }
+    .badge-blue {
+        @apply bg-sky-100 text-sky-800;
+    }
+    .badge-amber {
+        @apply bg-amber-100 text-amber-800;
+    }
+    .badge-slate {
+        @apply bg-slate-100 text-slate-700;
+    }
+
+    /* ---------- Tablas ---------- */
+    .table-wrap {
+        @apply relative overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-xs;
+    }
+    .table {
+        @apply w-full min-w-full text-left text-sm;
+    }
+    .table thead {
+        @apply border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-600;
+    }
+    .table th {
+        @apply whitespace-nowrap px-4 py-3;
+    }
+    .table td {
+        @apply px-4 py-3 align-middle;
+    }
+    .table tbody tr {
+        @apply border-b border-slate-100 last:border-0 hover:bg-slate-50;
+    }
+
+    /* ---------- Tarjetas de estadistica del panel ---------- */
+    .stat-card {
+        @apply flex items-center gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-xs;
+    }
+    .stat-icon {
+        @apply grid h-11 w-11 shrink-0 place-items-center rounded-md bg-brand-50 text-brand-700;
+    }
+}

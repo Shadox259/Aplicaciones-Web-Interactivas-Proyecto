@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # =====================================================================================
-# Library of Wonderland - imagen de distribucion (Apache + PHP 8.2 + la aplicacion)
+# Library of Wonderland - imagen de distribucion (Apache + PHP 8.2.35 + la aplicacion)
 #   docker build -t library-of-wonderland .
 # La aplicacion se hornea en la imagen: no hace falta Composer, Node ni XAMPP para usarla.
 # =====================================================================================
@@ -15,7 +15,8 @@ COPY . .
 RUN composer dump-autoload --no-dev --optimize --no-scripts --no-interaction
 
 # ---------- 2) Imagen final ----------
-FROM php:8.2-apache
+# 8.2.35 corrige CVE-2026-109618 y CVE-2026-109619 (RCE sin autenticacion, octubre 2026)
+FROM php:8.2.35-apache
 
 LABEL org.opencontainers.image.title="Library of Wonderland" \
       org.opencontainers.image.description="Biblioteca digital en Laravel: los autores publican libros en PDF y los lectores los leen gratis" \

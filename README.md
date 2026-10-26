@@ -50,7 +50,7 @@ Hay además otros autores y clientes de ejemplo, 15 libros con PDF, reseñas y a
 
 ## Ejecutar con Docker (recomendado)
 
-Todo corre en contenedores: la aplicación (PHP 8.2 + Apache) y la base de datos (MariaDB). **No hace falta instalar PHP, Composer, XAMPP ni nada más** — solo Docker Desktop.
+Todo corre en contenedores: la aplicación (PHP 8.2.35 + Apache) y la base de datos (MariaDB). **No hace falta instalar PHP, Composer, XAMPP ni nada más** — solo Docker Desktop.
 
 ```bash
 docker compose up -d        # descarga la imagen y arranca todo
@@ -110,7 +110,7 @@ Doble clic en **`ver-en-esta-pc.bat`**. Usa el PHP portátil de la carpeta `_php
 
 ## Instalación en XAMPP (alternativa)
 
-Necesitas **XAMPP con PHP 8.2 o superior** (elige la versión 8.2.x en <https://www.apachefriends.org>).
+Necesitas **XAMPP con PHP 8.2 o superior** (elige la versión 8.2.x en <https://www.apachefriends.org>). Usa **8.2.35 o posterior** (o 8.3.36+ / 8.4.27+ / 8.5.12+): las anteriores tienen las vulnerabilidades críticas CVE-2026-109618 y CVE-2026-109619.
 
 1. Copia la carpeta a `C:\xampp\htdocs\library-of-wonderland`.
 2. En el Panel de Control de XAMPP pulsa **Start** en **Apache** y en **MySQL**.

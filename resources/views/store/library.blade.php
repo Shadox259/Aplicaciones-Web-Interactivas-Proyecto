@@ -1,33 +1,42 @@
-@extends('layouts.app')
+{{-- Autores y administradores ven su biblioteca dentro del panel (con la barra lateral); los clientes, en el sitio. --}}
+@extends(auth()->user()->canPublish() ? 'layouts.panel' : 'layouts.app')
 
 @section('title', 'Mi biblioteca')
+@section('subtitle', 'Administra los títulos que deseas consultar más adelante o tener a mano.')
+
+@section('actions')
+    <form action="{{ route('biblioteca') }}" method="GET" class="w-full sm:w-96">
+        <div class="relative">
+            <x-icon name="magnifying-glass" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <input type="search" name="q" value="{{ $query }}" placeholder="Buscar en mi biblioteca" class="input pl-10">
+        </div>
+    </form>
+@endsection
 
 @section('content')
-    <div class="container-page py-10">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-                <p class="text-xs uppercase tracking-wider text-slate-500">Biblioteca</p>
-                <h1 class="mt-1 text-2xl font-semibold text-slate-900">Libros guardados</h1>
-                <p class="mt-2 text-sm text-slate-600">Administra los títulos que deseas consultar más adelante o tener a mano.</p>
-            </div>
-
-            <form action="{{ route('biblioteca') }}" method="GET" class="w-full max-w-md">
-                <div class="relative">
-                    <x-icon name="magnifying-glass" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                    <input type="search" name="q" value="{{ $query }}" placeholder="Buscar en mi biblioteca" class="input pl-10">
+    @php($inPanel = auth()->user()->canPublish())
+    <div @class(['container-page py-10' => ! $inPanel])>
+        @unless ($inPanel)
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-wider text-slate-500">Biblioteca</p>
+                    <h1 class="mt-1 text-2xl font-semibold text-slate-900">Libros guardados</h1>
+                    <p class="mt-2 text-sm text-slate-600">@yield('subtitle')</p>
                 </div>
-            </form>
-        </div>
+
+                @yield('actions')
+            </div>
+        @endunless
 
         @if ($books->isNotEmpty())
-            <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sm:gap-6">
+            <div @class(['grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sm:gap-6', 'mt-8' => ! $inPanel])>
                 @foreach ($books as $book)
                     <x-book-card :book="$book" />
                 @endforeach
             </div>
             <div class="mt-8">{{ $books->withQueryString()->links() }}</div>
         @else
-            <div class="card mt-8">
+            <div @class(['card', 'mt-8' => ! $inPanel])>
                 <div class="card-body py-16 text-center">
                     <x-icon name="bookmark" class="mx-auto h-14 w-14 text-slate-400" />
                     <h2 class="mt-5 text-2xl font-semibold text-slate-900">Tu biblioteca está vacía</h2>
@@ -37,7 +46,7 @@
             </div>
         @endif
 
-        @if (auth()->user()->canPublish())
+        @if ($inPanel)
             <section class="mt-14">
                 <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>

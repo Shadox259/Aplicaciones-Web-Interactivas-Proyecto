@@ -1,16 +1,21 @@
-@extends('layouts.app')
+{{-- Autores y administradores ven su perfil dentro del panel (con la barra lateral); los clientes, en el sitio. --}}
+@extends(auth()->user()->canPublish() ? 'layouts.panel' : 'layouts.app')
 
 @section('title', 'Mi perfil')
+@section('subtitle', 'Actualiza tus datos, cambia tu contraseña y administra el estado de tu cuenta.')
 
 @section('content')
-    <div class="container-page py-10">
-        <div class="flex flex-col gap-2">
-            <p class="text-xs uppercase tracking-wider text-slate-500">Cuenta</p>
-            <h1 class="text-2xl font-semibold text-slate-900">Mi perfil</h1>
-            <p class="text-sm text-slate-600">Actualiza tus datos, cambia tu contraseña y administra el estado de tu cuenta.</p>
-        </div>
+    @php($inPanel = $user->canPublish())
+    <div @class(['container-page py-10' => ! $inPanel])>
+        @unless ($inPanel)
+            <div class="flex flex-col gap-2">
+                <p class="text-xs uppercase tracking-wider text-slate-500">Cuenta</p>
+                <h1 class="text-2xl font-semibold text-slate-900">Mi perfil</h1>
+                <p class="text-sm text-slate-600">@yield('subtitle')</p>
+            </div>
+        @endunless
 
-        <div class="mt-8 grid gap-8 xl:grid-cols-[1.1fr_0.9fr]">
+        <div @class(['grid gap-8 xl:grid-cols-[1.1fr_0.9fr]', 'mt-8' => ! $inPanel])>
             <section class="space-y-8">
                 <article class="card">
                     <div class="card-body">
